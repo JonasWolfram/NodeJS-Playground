@@ -13,7 +13,7 @@ Hier ein Vergleich zum File Request zwischen PHP, [ASP.NET](http://ASP.NET) und 
 3. Nun erfolgt eine Rückgabe an den Client
 4. Bereit für den nächsten Request.
 
-**NodeJS**
+**NodeJS:**
 
 1. Sendet die Aufgabe an das Datei Systems des Computers
 2. Bereit für den nächsten Request.
@@ -22,9 +22,9 @@ Hier ein Vergleich zum File Request zwischen PHP, [ASP.NET](http://ASP.NET) und 
 ### Was kann NodeJS?
 
 - NodeJS kann dynamischen Website Inhalt erzeugen.
-- NodeJS kann **create**, **open**, **read**, **write**, **delete** und **close** Funktionen auf Dateien die auf einem Server liegen anwenden.
+- NodeJS kann **create**, **open**, **read**, **write**, **delete** und **close** Funktionen auf Dateien, die auf einem Server liegen anwenden.
 - NodeJS kann Formular Inhalte sammeln und an eine Datenbank weitergeben.
-- NodeJS kann Daten in Datenbanken hinzufügen, löschen oder verändern .
+- NodeJS kann Daten in Datenbanken hinzufügen, löschen oder verändern.
 
 ### Was ist eine NodeJS-Datei?
 
