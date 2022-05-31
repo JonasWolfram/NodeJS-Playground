@@ -371,3 +371,185 @@ fs.rename("fs-rename-one.txt", "fs-rename-two.txt", function (err) {
 ```
 
 # URL System
+
+Mit dem URL-Module können wir Webadressen in lesbare Teile zerlegen.
+
+Module anfordern:
+
+```tsx
+const url = require("url");
+```
+
+Um eine Webadresse zu analysieren können wir die Methode `url.parse()` nutzen. Diese Methode hat folgenden Syntax:
+
+Syntax:
+
+```tsx
+url.parse(urlString, parseQueryString, slashesDenoteHost);
+```
+
+- urlString:
+  - Beinhaltet die URL
+- parseQueryString:
+  - Boolean Wert. Wenn true wird das QueryProperty ein Object wieder geben. Default ist false.
+- slashesDenoteHost:
+  - Dies ist ein boolescher Wert. Wenn er auf true gesetzt ist, wird das erste Token nach der Zeichenkette // und vor dem nächsten / als Host interpretiert.
+  - Zum Beispiel: [//geeksforgeeks.org/web-technology](notion://geeksforgeeks.org/web-technology) enthält das Ergebnis {host: '[geeksforgeeks.org](http://geeksforgeeks.org/)', pathname: '/web-technology'} und nicht {pathname: '[//geeksforgeeks.org/web-technology](notion://geeksforgeeks.org/web-technology)'}. Sein Standardwert ist false.
+
+Nun zerlegen wir eine Webadresse mit Parse in seine Einzelteile
+
+```tsx
+const url = require("url");
+
+// Webadresse
+const adr = "http://localhost:8080/default.htm?year=2017&month=february";
+// parse() auf die Webadresse anwenden
+const q = url.parse(adr, true);
+
+console.log(q.hostname);
+//-> localhost
+console.log(q.host);
+//-> localhost:8080
+console.log(q.search);
+//-> ?year=2017&month=february
+
+let qData = q.query;
+console.log(qData);
+//-> [Object: null prototype] { year: '2017', month: 'february' }
+```
+
+Nun erstellen wir aus den vorherigen Übungen zu http und fs einen Webserver der vorhandene HTML-Dateien lesen kann und die URL lesen kann.
+
+```tsx
+const http = require("http");
+const fs = require("fs");
+const url = require("url");
+
+http
+  .createServer(function (req, res) {
+    let q = url.parse(req.url, true);
+    let filename = "." + q.pathname;
+    fs.readFile(filename, function (err, data) {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/html" });
+        return res.end("404 Not Found");
+      }
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.write(data);
+      return res.end();
+    });
+  })
+  .listen(8080);
+```
+
+Im einzelen passiert folgendes:
+
+1. **Anfordern der Module:**
+
+   Durch die require Methode:
+
+   ```tsx
+   const http = require("http");
+   const fs = require("fs");
+   const url = require("url");
+   ```
+
+2. **Erstellung des Webservers.**
+
+   Durch die HTTP-Methode createServer auf Port 8080
+
+   ```tsx
+   http
+     .createServer(function (req, res) {
+   		...
+   		...
+   		...
+     }).listen(8080);
+   ```
+
+3. **Initialsierung der URL - Variable die “.” und Patchname konkatiniert.**
+
+   Dazu nutzen wir das req Argument des Webservers um an die URL zu gelangen.
+
+   Nun Speichern wir den aktuellen pathname / Dateiname noch in eine Variable, die konkatinieren wir noch durch einen Punkt vor der Pathnamen
+
+   ```tsx
+   let q = url.parse(req.url, true);
+   let filename = "." + q.pathname;
+   ```
+
+   Hier noch eine Darstellung der zusammen gesetzten Variablen:
+
+   ```tsx
+   q.pathname = /summer
+
+   filename = '.' + q.pathname
+
+   Ergibt
+   **./summer**
+   ```
+
+4. **Zugriff auf das File-System mir der readFile() Methode.**
+
+   Nun greifen wir auf das File-System zu um die benötigten Dateien zu finden. Dazu nutzen wir die `readFile()` Methode und übergeben ihr als erstes Argument die Variable `filename`.
+
+   ```tsx
+   fs.readFile(filename, function (err, data) {
+   			...
+   			...
+   });
+   ```
+
+   Danach fangen wir zunächst alle möglichen Fehler ab und geben einen “404 Not Found” wieder, sollte keine Content gefunden werden.
+
+   ```tsx
+   fs.readFile(filename, function (err, data) {
+         if (err) {
+           res.writeHead(404, { "Content-Type": "text/html" });
+           return res.end("404 Not Found");
+         }
+   			...
+       });
+   ```
+
+   Alle gefunden Dateien können nun angezeigt werden. Dafür nutzen wir die Methoden `res.writeHead()`, `res.write()` und geben die Dateien wieder zurück durch return `res.end()`
+
+   ```tsx
+   fs.readFile(filename, function (err, data) {
+     if (err) {
+       res.writeHead(404, { "Content-Type": "text/html" });
+       return res.end("404 Not Found");
+     }
+     res.writeHead(200, { "Content-Type": "text/html" });
+     res.write(data);
+     return res.end();
+   });
+   ```
+
+Die gesamte Datei sieht nun wie folgt aus.
+
+```tsx
+const http = require("http");
+const fs = require("fs");
+const url = require("url");
+
+http
+  .createServer(function (req, res) {
+    let q = url.parse(req.url, true);
+    let filename = "." + q.pathname;
+    fs.readFile(filename, function (err, data) {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/html" });
+        return res.end("404 Not Found");
+      }
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.write(data);
+      return res.end();
+    });
+  })
+  .listen(8080);
+```
+
+Eine Übersicht aller URL-System Methoden sind hier zu finden:
+
+[URL | Node.js v18.2.0 Documentation](https://nodejs.org/api/url.html)
