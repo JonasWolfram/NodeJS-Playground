@@ -2,7 +2,7 @@
 
 - Text Node Intro
 
-> Eine wichtige Eigenschaft von NodeJS ist, dass es **asynchrone Programmierung** nutz.
+> Eine wichtige Eigenschaft von NodeJS ist, dass es **asynchrone Programmierung** nutzt.
 
 Hier ein Vergleich zum File Request zwischen PHP, [ASP.NET](http://ASP.NET) und NodeJS
 
