@@ -553,3 +553,127 @@ http
 Eine Übersicht aller URL-System Methoden sind hier zu finden:
 
 [URL | Node.js v18.2.0 Documentation](https://nodejs.org/api/url.html)
+
+# NPM
+
+NodeJS verfügt über einen mächtigen und sehr weit verbreiteten Paketmanager mit dem Namen **NPM** (Node Package Manager).
+
+Über `npm` lassen sich vorhanden Pakete / Module laden und im eigenen Projekt benutzen.
+
+Auf [www.npmjs.com](https://www.npmjs.com/) lassen sich tausend von kostemlosen Pakete herunterladen und benutzen. Dabei wird `npm` automatisch auf dem Computer mit installiert, wenn man [NodeJS](https://nodejs.org/de/) installiert.
+
+## NVM - Node Version Manager
+
+Wenn man NodeJS von der offiziellen Seite heraus installiert, steht nur genau die Version zu Verfügung, die installiert wurde.
+
+Über die Open-Source Software `nvm` lassen sich mehrere Version von NodeJS installieren, verwalten und es ist möglich zwischen den Versionen schnell zu wechseln.
+
+Alle informationen über nvm sind hier zu finden → https://github.com/nvm-sh/nvm
+
+Die wichtigsten Befehle von nvm sind:
+
+```tsx
+nvm install [*version]*
+nvm ls
+nvm use [*version*]
+```
+
+## Packages in Node
+
+NPM-Pakete enthalten alle nötigen funktionalitäten um ein Module zu Verfügung zu stellen.
+
+Module sind JavaScript Librarys, welche dann im eigenen Projekt genutzt werden kann.
+
+## Packages downloaden
+
+npm-Packages werden über den eigenen CLI (Command Line Interface) installiert.
+
+Im einfachsten Fall sieht dieses so aus:
+
+```tsx
+npm install upper-case
+```
+
+Da NPM ein komplett eigenes Ökosystem ist, gehen wir hier nur auf die nötigsten Funktionsweisen ein.
+
+In Projekten werden NPM-Pakete im Ordner `node_modules` gespeichert und über die Datei `package.json` verwaltet.
+
+## Packages nutzen
+
+Um ein geladenes Paket / Module zu nutzen, gehen wir gewohnt vor:
+
+```tsx
+const uc = require("upper-case");
+```
+
+Nun können wir dieses Module nutzen.
+
+```tsx
+const http = require("http");
+const uc = require("upper-case");
+
+http
+  .createServer(function (req, res) {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.write(uc.upperCase("hello world!"));
+    return res.end();
+  })
+  .listen(8080);
+
+//-> HELLO WORLD!
+```
+
+# NodeJS Events
+
+NodeJS eignet sich hervoragend um Event-Getrieben Applikationen zu entwerfen.
+
+## Events in NodeJS
+
+Jede Aktion / Interaktion mit einem Computer ist ein Event. Beispielsweise wenn man eine Verbindung zu einem Netzwerk aufbaut oder eine Datei öffnet.
+
+In NodeJS können Objekte Event auslösen, wie beispielsweise `readStream`, welches Dateien öffnet und schließen kann.
+
+```tsx
+const fs = require("fs");
+const rs = fs.createReadStream("./demofile.md");
+
+rs.on("open", () => {
+  console.log("Datei wurde geöffnet!");
+});
+```
+
+Im oberen Beispiel fordern wir zunächst das Module fs an, danach erstellen wir eine Variable, die als Inhalt die Datei `‘demofile.md’` aus via dem File-System liest.
+
+Dafür verwenden wir die Methode `createReadstream`.
+
+## Event Module
+
+NodeJS hat ein integriertes Module mit dem Namen ‘Events’ mit dem sich schnell Events zum erstellen, lesen, listen oder auslösen von Events erstellen lassen.
+
+Im Fall des Event Modules müssen wir nicht nur ein `require()` erstellen, sondern auch bei gewissen Objekt-Typen eine Instanz erstellen:
+
+```tsx
+const events = require("events");
+const eventEmitter = new events.EventEmitter();
+```
+
+Das Ergebnis dieser Instanziierung wäre:
+
+```tsx
+console.log(eventEmitter);
+
+/*
+EventEmitter {
+  _events: [Object: null prototype] {},
+  _eventsCount: 0,
+  _maxListeners: undefined,
+  [Symbol(kCapture)]: false
+}
+*/
+```
+
+## Das EventEmitter Objekt
+
+Durch das EventEmitter-Objekt lassen sich Ereignissen eigene Event-Handler zuweisen.
+
+Im folgenden Beispiel soll ein Event ausgelöst werden, wenn ein `‘Schrei’` Event eintritt.
