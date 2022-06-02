@@ -693,3 +693,34 @@ eventEmitter.on("Schrei", eventHandler);
 // Auslösen des Events
 eventEmitter.emit("Schrei");
 ```
+
+# Upload Files
+
+Für das abwicklen von Datei Uploads hat NodeJS das Modul “Formidable” an Bord.
+
+Das Formidable Module kann über NPM installiert werden:
+
+```tsx
+npm install formidable
+```
+
+Nun erstellen wir zunächst einen kleinen Webserver mit einem HTML-Form Objekt das einmal die <input> Variante zur Dateiauswahl, sowie einen “senden” Button beinhaltet:
+
+```tsx
+const http = require("http");
+
+http
+  .createServer(function (req, res) {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.write(
+      '<form action="fileupload" methode="post" enctype="multipart/form-data">'
+    );
+    res.write('<input type="file" name="filetoupload"><br>');
+    res.write('<input type="submit">');
+    res.write("</form>");
+    return res.end();
+  })
+  .listen(8080);
+```
+
+Nun implementieren wir das Module Formidable
