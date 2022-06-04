@@ -116,7 +116,7 @@ http.createServer(function(req, res) {    <- Erstellt ein Server Objekt
 																						 zuhören soll.
 ```
 
-Wenn wir nun [http://localhost:8080](http://localhost:8080) besuchen, sehen wir unseren Response. Allerdings nicht als HTML. Soll die Ausgabe in Browser freundlichen HTML erfolgen, müssen wir dies spezifizieren, beispielsweise durch writeHead, welches zwei Parameter entgegen nimmt: ein HTTP Status Code, in diesem Fall 200, was heißt das alles ok ist und ein Objekt erwartet, das aus Schlüssel/Wert paar dann genauere Informationen der Antwort beinhaltet.
+Wenn wir nun [http://localhost:8080](http://localhost:8080) besuchen, sehen wir unseren res. Allerdings nicht als HTML. Soll die Ausgabe in Browser freundlichen HTML erfolgen, müssen wir dies spezifizieren, beispielsweise durch writeHead, welches zwei Parameter entgegen nimmt: ein HTTP Status Code, in diesem Fall 200, was heißt das alles ok ist und ein Objekt erwartet, das aus Schlüssel/Wert paar dann genauere Informationen der Antwort beinhaltet.
 
 ```tsx
 http
