@@ -704,6 +704,8 @@ Das Formidable Module kann über NPM installiert werden:
 npm install formidable
 ```
 
+**Schritt 1 - Upload Form erstellen**
+
 Nun erstellen wir zunächst einen kleinen Webserver mit einem HTML-Form Objekt das einmal die <input> Variante zur Dateiauswahl, sowie einen “senden” Button beinhaltet:
 
 ```tsx
@@ -723,4 +725,178 @@ http
   .listen(8080);
 ```
 
+**Schritt 2 - Parsen der hochgeladenen Datei**
+
 Nun implementieren wir das Module Formidable
+
+```tsx
+const http = require("http");
+const formidable = require("formidable");
+
+http
+  .createServer(function (req, res) {
+    if (req.url == "/fileupload") {
+      var form = new formidable.IncomingForm();
+      form.parse(req, function (err, fields, files) {
+        res.write("File uploaded");
+        res.end();
+      });
+    } else {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.write(
+        '<form action="fileupload" method="post" enctype="multipart/form-data">'
+      );
+      res.write('<input type="file" name="filetoupload"><br>');
+      res.write('<input type="submit">');
+      res.write("</form>");
+      return res.end();
+    }
+  })
+  .listen(8080);
+```
+
+**Schritt 3 - Datei speichern**
+
+Nachdem die Datei erfolgreich hochgeladen wurde, werden wir unsere Datei nun noch einen neuen Path zuweisen.
+
+Dafür schreiben wir zwei verschachtelte Funktionen die zunächst alten und neuen Path zusammen setzt anhand des Speicherortes und des Dateinamens und zweitens eine `fs.rename` Funktion, die den alten, den neuen Namen als Argument entgegen nimmt sowie die Fähigkeit einen `Error` auszugeben, sollte etwas schiefgehen.
+
+```tsx
+var http = require("http");
+var formidable = require("formidable");
+var fs = require("fs");
+
+http
+  .createServer(function (req, res) {
+    if (req.url == "/fileupload") {
+      var form = new formidable.IncomingForm();
+      form.parse(req, function (err, fields, files) {
+        var oldpath = files.filetoupload.filepath;
+        var newpath =
+          "/Users/jonaswolfram/Sites/Code/NodeJS/node-playground/UploadFiles/Uploads/" +
+          files.filetoupload.originalFilename;
+        fs.rename(oldpath, newpath, function (err) {
+          if (err) throw err;
+          res.write("File uploaded and moved!");
+          res.end();
+        });
+      });
+    } else {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.write(
+        '<form action="fileupload" method="post" enctype="multipart/form-data">'
+      );
+      res.write('<input type="file" name="filetoupload"><br>');
+      res.write('<input type="submit">');
+      res.write("</form>");
+      return res.end();
+    }
+  })
+  .listen(8080);
+```
+
+Der nun geschaffene Code ist in der Lage einen Upload entgegen zu nehmen und ihn im Ordner “**Uploads**” zu hinterlegen.
+
+# Email System
+
+Um es einfacher zu machen in Node mit Email umzugehen, benutzen wir das Nodemailer-Modul.
+
+```tsx
+npm install nodemailer
+```
+
+Die Module Integration geschieht in unserem Beispiel wie folgt:
+
+```tsx
+const nodemailer = require("nodemailer");
+```
+
+### Emails verschicken
+
+Um Emails zu verschicken müssen nun das Nodemailer-Module importieren. Danach müssen wir zunächst eine Transport Funktion anlegen, in dieser sind dann die Informationen hinterlegt welcher Service genutzt wird und dessen Authentifikations Daten in Form von Email und Passwort.
+
+```tsx
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "youremail@gmail.com",
+    password: "yourpassword",
+  },
+});
+```
+
+Danach gestalten wir den eigentlichen ‘Körper’ des Email Programms in dem sich dann Inhalte sowie Empfänger befinden.
+
+```tsx
+const mailOptions = {
+  from: "youremail@gmail.com",
+  to: "myfriendsemail@hotmail.com",
+  subject: "Ich schicke Dir eine Email via NodeJS",
+  text: "Das ist ja einfach!!!",
+};
+```
+
+Diesen mailOptions Körper können wir auch für mehrere Empfänger:
+
+```tsx
+var mailOptions = {
+  from: "youremail@gmail.com",
+  to: "myfriend@yahoo.com, myotherfriend@yahoo.com",
+  subject: "Sending Email using Node.js",
+  text: "That was easy!",
+};
+```
+
+oder mit HTML anstatt Text realsieren:
+
+```tsx
+var mailOptions = {
+  from: "youremail@gmail.com",
+  to: "myfriend@yahoo.com",
+  subject: "Sending Email using Node.js",
+  html: "<h1>Welcome</h1><p>That was easy!</p>",
+};
+```
+
+am Schluss haben wir noch eine Funktion die uns mögliche Error oder ein erfolgreiches verschicken einer Email anzeigt:
+
+```tsx
+transporter.sendMail(mailOptions, function (error, info) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Email sent: " + info.response);
+  }
+});
+```
+
+Code gesamt:
+
+```tsx
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "youremail@gmail.com",
+    password: "yourpassword",
+  },
+});
+
+const mailOptions = {
+  from: "youremail@gmail.com",
+  to: "myfriendsemail@hotmail.com",
+  subject: "Ich schicke Dir eine Email via NodeJS",
+  text: "Das ist ja einfach!!!",
+};
+
+transporter.sendMail(mailOptions, function (error, info) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Email sent: " + info.response);
+  }
+});
+```
