@@ -1,2 +1,4 @@
+# Git Ignore Folder
 node_modules
 Email
+.gitignore
