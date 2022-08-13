@@ -11,7 +11,7 @@ export function render(movies) {
 <body>
 <h1>Filmliste</h1>
     <table>
-        <thead><tr><th>ID</th><th>Title</th><th>Jahr</th><th>Löschen</th></tr></thead>
+        <thead><tr><th>ID</th><th>Title</th><th>Jahr</th><th>Löschen</th><th>Bearbeiten</th></tr></thead>
         <tbody>
             ${movies
               .map(
@@ -26,8 +26,8 @@ export function render(movies) {
               )
               .join("")}
             </tbody>
-    </table>
-    <a href="/movie/form">neu</a>
+            </table>
+        <a href="/movie/form">neu</a>
 </body>
 </html>
 `;

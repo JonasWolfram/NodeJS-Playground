@@ -1,4 +1,4 @@
-export function render(movies) {
+export function render(movie) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
