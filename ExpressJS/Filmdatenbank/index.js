@@ -13,6 +13,8 @@ app.use(express.static(`${dirname(fileURLToPath(import.meta.url))}/public`));
 const accessLogStream = createWriteStream("access.log", { flags: "a" });
 app.use(morgan("common", { immediate: true, stream: accessLogStream }));
 
+app.use(express.urlencoded({ extended: false }));
+
 app.use("/movie", movieRouter);
 
 app.get("/", (request, response) => response.redirect("/movie"));

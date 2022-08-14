@@ -1,4 +1,4 @@
-import { getAll, remove, get } from "./model.js";
+import { getAll, remove, get, save } from "./model.js";
 import { render } from "./view.js";
 import { render as form } from "./form.js";
 
@@ -22,4 +22,14 @@ export async function formAction(request, response) {
 
   const body = form(movie);
   response.send(body);
+}
+
+export async function saveAction(request, response) {
+  const movie = {
+    id: request.body.id,
+    title: request.body.title,
+    year: request.body.year,
+  };
+  await save(movie);
+  response.redirect(request.baseUrl);
 }
